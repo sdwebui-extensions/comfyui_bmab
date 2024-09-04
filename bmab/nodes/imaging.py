@@ -18,6 +18,7 @@ import node_helpers
 from bmab import utils
 from bmab.utils import yolo, sam
 from bmab.external.rmbg14.briarmbg import BriaRMBG
+from bmab.external.rmbg14.rembg import BriaRMBG as Briarmbg
 from bmab.external.rmbg14.utilities import preprocess_image, postprocess_image
 from bmab.external.lama import lama_inpainting
 
@@ -86,9 +87,15 @@ class BMABRemoveBackground:
 
 	def process(self, image, channel):
 
-		net = BriaRMBG()
 		device = utils.get_device()
-		net = BriaRMBG.from_pretrained('briaai/RMBG-1.4')
+		if os.path.exists('/stable-diffusion-cache/models/RMBG-1.4'):
+			model_path = '/stable-diffusion-cache/models/RMBG-1.4/model.pth'
+			net = Briarmbg()
+			device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+			net.load_state_dict(torch.load(model_path, map_location=device))
+		else:
+			net = BriaRMBG()
+			net = BriaRMBG.from_pretrained('briaai/RMBG-1.4')
 		net.to(device)
 		net.eval()
 

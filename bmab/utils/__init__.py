@@ -46,6 +46,30 @@ def load_file_from_url(url, model_dir=None, progress=True, file_name=None):
 		download_url_to_file(url, cached_file, hash_prefix=None, progress=progress)
 	return cached_file
 
+cache_file_list = {
+	'sam_vit_b_01ec64.pth': '/stable-diffusion-cache/models/sams/sam_vit_b_01ec64.pth',
+	'sam_vit_l_0b3195.pth': '/stable-diffusion-cache/models/sams/sam_vit_l_0b3195.pth',
+	'sam_vit_h_4b8939.pth': '/stable-diffusion-cache/models/sams/sam_vit_h_4b8939.pth',
+	'groundingdino_swint_ogc.pth': '/stable-diffusion-cache/models/grounding-dino/groundingdino_swint_ogc.pth',
+	'GroundingDINO_SwinT_OGC.py': '/stable-diffusion-cache/models/grounding-dino/GroundingDINO_SwinT_OGC.cfg.py',
+	'face_yolov8n.pt': '/stable-diffusion-cache/models/yolo/face_yolov8n.pt',
+	'face_yolov8n_v2.pt': '/stable-diffusion-cache/models/yolo/face_yolov8n_v2.pt',
+	'face_yolov8m.pt': '/stable-diffusion-cache/models/yolo/face_yolov8m.pt',
+	'face_yolov8s.pt': '/stable-diffusion-cache/models/yolo/face_yolov8s.pt',
+	'hand_yolov8n.pt': '/stable-diffusion-cache/models/yolo/hand_yolov8n.pt',
+	'hand_yolov8s.pt': '/stable-diffusion-cache/models/yolo/hand_yolov8s.pt',
+	'person_yolov8m-seg.pt': '/stable-diffusion-cache/models/yolo/person_yolov8m-seg.pt',
+	'person_yolov8n-seg.pt': '/stable-diffusion-cache/models/yolo/person_yolov8n-seg.pt',
+	'person_yolov8s-seg.pt': '/stable-diffusion-cache/models/yolo/person_yolov8s-seg.pt',
+	'sam_hq_vit_b.pth': '/stable-diffusion-cache/models/sams/sam_hq_vit_b.pth',
+	'sam_hq_vit_h.pth': '/stable-diffusion-cache/models/sams/sam_hq_vit_h.pth',
+	'sam_hq_vit_l.pth': '/stable-diffusion-cache/models/sams/sam_hq_vit_l.pth',
+	'sam_hq_vit_tiny.pth': '/stable-diffusion-cache/models/sams/sam_hq_vit_tiny.pth',
+	'bmab_face_nm_yolov8n.pt': '/stable-diffusion-cache/models/yolo/bmab_face_nm_yolov8n.pt',
+	'bmab_face_sm_yolov8n.pt': '/stable-diffusion-cache/models/yolo/bmab_face_sm_yolov8n.pt',
+	'bmab_hand_yolov8n.pt': '/stable-diffusion-cache/models/yolo/bmab_hand_yolov8n.pt',
+	'ControlNetLama.pth': '/stable-diffusion-cache/models/annotator/lama/ControlNetLama.pth',
+}
 
 def lazy_loader(filename):
 	bmab_model_path = os.path.join(os.path.dirname(__file__), '../../models')
@@ -81,6 +105,8 @@ def lazy_loader(filename):
 		return file
 
 	if filename in targets and filename not in files:
+		if os.path.exists(cache_file_list[filename]):
+			return cache_file_list[filename]
 		load_file_from_url(targets[filename], bmab_model_path)
 	return file
 
@@ -88,11 +114,15 @@ def lazy_loader(filename):
 def list_pretraining_models():
 	bmab_model_path = os.path.join(os.path.dirname(__file__), '../../models')
 	files = glob.glob(os.path.join(bmab_model_path, '*.pt'))
+	if len(files)<1 and os.path.exists('/stable-diffusion-cache/models'):
+		return [key for key in cache_file_list if key.endswith('.pt')]
 	return [os.path.basename(f) for f in files]
 
 
 def load_pretraining_model(filename):
 	bmab_model_path = os.path.join(os.path.dirname(__file__), '../../models')
+	if not os.path.exists(bmab_model_path) and os.path.exists(cache_file_list[filename]):
+		return cache_file_list[filename]
 	return os.path.join(bmab_model_path, filename)
 
 
