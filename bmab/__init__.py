@@ -18,6 +18,7 @@ NODE_CLASS_MAPPINGS = {
 
     # Sampler
     'BMAB Integrator': nodes.BMABIntegrator,
+    'BMAB ToBind': nodes.BMABToBind,
     'BMAB Flux Integrator': nodes.BMABFluxIntegrator,
     'BMAB Extractor': nodes.BMABExtractor,
     'BMAB SeedGenerator': nodes.BMABSeedGenerator,
@@ -81,6 +82,11 @@ NODE_CLASS_MAPPINGS = {
     'BMAB LoRA Loader': nodes.BMABLoraLoader,
     'BMAB Prompt': nodes.BMABPrompt,
     'BMAB Google Gemini Prompt': nodes.BMABGoogleGemini,
+
+    # Fill
+    'BMAB Reframe': nodes.BMABReframe,
+    'BMAB Outpaint By Ratio': nodes.BMABOutpaintByRatio,
+    'BMAB Inpaint': nodes.BMABInpaint
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -100,6 +106,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
 
     # Sampler
     'BMAB Integrator': 'BMAB Integrator',
+    'BMAB ToBind': 'BMAB ToBind',
     'BMAB Flux Integrator': 'BMAB Flux Integrator',
     'BMAB KSampler': 'BMAB KSampler',
     'BMAB KSamplerHiresFix': 'BMAB KSampler Hires. Fix',
@@ -165,5 +172,10 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     'BMAB LoRA Loader': 'BMAB Lora Loader',
     'BMAB Prompt': 'BMAB Prompt',
     'BMAB Google Gemini Prompt': 'BMAB Google Gemini API',
+
+    # Fill
+    'BMAB Reframe': 'BMAB Reframe',
+    'BMAB Outpaint By Ratio': 'BMAB Outpaint By Ratio',
+    'BMAB Inpaint': 'BMAB Inpaint',
 }
 
