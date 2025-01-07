@@ -1,7 +1,8 @@
 import sys
 import torch
-from transformers import AutoProcessor, AutoModelForZeroShotObjectDetection
 from bmab import utils
+import os
+import folder_paths
 
 
 def get_device():
@@ -14,7 +15,12 @@ def get_device():
 
 
 def predict(pilimg, prompt, box_threahold=0.35, text_threshold=0.25, device=get_device()):
-	model_id = "IDEA-Research/grounding-dino-base"
+	from transformers import AutoProcessor, AutoModelForZeroShotObjectDetection
+	if os.path.exists("/stable-diffusion-cache/models/grounding-dino-base"):
+		model_id = "/stable-diffusion-cache/models/grounding-dino-base"
+	else:
+		model_id = os.path.join(folder_paths.models_dir, "grounding-dino-base")
+		print(f'pls download IDEA-Research/grounding-dino-base to {model_id}')
 
 	processor = AutoProcessor.from_pretrained(model_id)
 	model = AutoModelForZeroShotObjectDetection.from_pretrained(model_id).to(device)

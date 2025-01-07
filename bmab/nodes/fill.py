@@ -10,6 +10,8 @@ from bmab.external.fill.pipeline_fill_sd_xl import StableDiffusionXLFillPipeline
 from PIL import Image, ImageDraw
 
 from bmab import utils
+import os
+import folder_paths
 
 
 pipe = None
@@ -17,30 +19,41 @@ pipe = None
 
 def load():
 	global pipe
+	model_id = os.path.join(folder_paths.models_dir, "xinsir/controlnet-union-sdxl-1.0")
+	vae_model_id = os.path.join(folder_paths.models_dir, "madebyollin/sdxl-vae-fp16-fix")
+	xl_model_id = os.path.join(folder_paths.models_dir, "RealVisXL_V5.0_Lightning")
+	if os.path.exists("/stable-diffusion-cache/models/xinsir_controlnet-union-sdxl-1.0"):
+		model_id = "/stable-diffusion-cache/models/xinsir_controlnet-union-sdxl-1.0"
+		vae_model_id = "/stable-diffusion-cache/models/sdxl-vae-fp16-fix"
+		xl_model_id = "/stable-diffusion-cache/models/RealVisXL_V5.0_Lightning"
+	else:
+		print(f'pls download xinsir/controlnet-union-sdxl-1.0 to {model_id}')
+		print(f'pls download madebyollin/sdxl-vae-fp16-fix to {vae_model_id}')
+		print(f'pls download RealVisXL_V5.0_Lightning to {xl_model_id}')
 
 	config_file = hf_hub_download(
-		"xinsir/controlnet-union-sdxl-1.0",
+		model_id,
 		filename="config_promax.json",
 	)
 
 	config = ControlNetModel_Union.load_config(config_file)
 	controlnet_model = ControlNetModel_Union.from_config(config)
 	model_file = hf_hub_download(
-		"xinsir/controlnet-union-sdxl-1.0",
+		model_id,
 		filename="diffusion_pytorch_model_promax.safetensors",
 	)
 	state_dict = load_state_dict(model_file)
 	model, _, _, _, _ = ControlNetModel_Union._load_pretrained_model(
-		controlnet_model, state_dict, model_file, "xinsir/controlnet-union-sdxl-1.0"
+		controlnet_model, state_dict, model_file, model_id
 	)
 	model.to(device="cuda", dtype=torch.float16)
 
 	vae = AutoencoderKL.from_pretrained(
-		"madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16
+		vae_model_id, torch_dtype=torch.float16
 	).to("cuda")
 
 	pipe = StableDiffusionXLFillPipeline.from_pretrained(
-		"SG161222/RealVisXL_V5.0_Lightning",
+		xl_model_id,
 		torch_dtype=torch.float16,
 		vae=vae,
 		controlnet=model,

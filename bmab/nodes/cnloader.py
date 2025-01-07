@@ -12,6 +12,7 @@ from bmab import utils
 from bmab.nodes.binder import BMABBind
 from bmab.external.rmbg14.briarmbg import BriaRMBG
 from bmab.external.rmbg14.utilities import preprocess_image, postprocess_image
+import os
 
 
 class BMABControlNet:
@@ -324,7 +325,12 @@ class BMABControlNetIPAdapter(BMABControlNet):
 	def remove_background(self, image):
 		net = BriaRMBG()
 		device = utils.get_device()
-		net = BriaRMBG.from_pretrained('briaai/RMBG-1.4')
+		model_id = os.path.join(folder_paths.models_dir, 'RMBG-1.4')
+		if os.path.exists("/stable-diffusion-cache/models/RMBG-1.4"):
+			model_id = "/stable-diffusion-cache/models/RMBG-1.4"
+		else:
+			print(f"please download briaai/RMBG-1.4 to {model_id}")
+		net = BriaRMBG.from_pretrained(model_id)
 		net.to(device)
 		net.eval()
 

@@ -1,10 +1,10 @@
 from PIL import Image
 
-from ultralytics import YOLO
 from bmab import utils
 
 
 def predict(image: Image, model, confidence):
+	from ultralytics import YOLO
 	yolo = utils.lazy_loader(model)
 	boxes = []
 	confs = []

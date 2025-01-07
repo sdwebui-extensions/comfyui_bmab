@@ -3,8 +3,6 @@ import os
 import numpy as np
 
 from PIL import Image
-from segment_anything import SamPredictor
-from segment_anything import sam_model_registry
 from bmab import utils
 
 
@@ -14,6 +12,7 @@ sam_model = None
 
 
 def sam_init(model):
+	from segment_anything import sam_model_registry
 	model_type = 'vit_b'
 	for m in ('vit_b', 'vit_l', 'vit_h'):
 		if model.find(m) >= 0:
@@ -30,6 +29,7 @@ def sam_init(model):
 
 
 def sam_predict(pilimg, boxes, model='sam_vit_b_01ec64.pth'):
+	from segment_anything import SamPredictor
 	sam = sam_init(model)
 
 	mask_predictor = SamPredictor(sam)
@@ -55,6 +55,7 @@ def sam_predict(pilimg, boxes, model='sam_vit_b_01ec64.pth'):
 
 
 def sam_predict_box(pilimg, box, model='sam_vit_b_01ec64.pth'):
+	from segment_anything import SamPredictor
 	sam = sam_init(model)
 
 	mask_predictor = SamPredictor(sam)
@@ -75,6 +76,7 @@ def sam_predict_box(pilimg, box, model='sam_vit_b_01ec64.pth'):
 
 
 def get_array_predict_box(pilimg, box, model='sam_vit_b_01ec64.pth'):
+	from segment_anything import SamPredictor
 	sam = sam_init(model)
 	mask_predictor = SamPredictor(sam)
 	numpy_image = np.array(pilimg)
